@@ -1,5 +1,5 @@
 import {findById} from "./../repositories/employeeRepository.js"
-import {findByTypeAndEmployeeId,TransactionTypes,CardInsertData} from "./../repositories/cardRepository.js"
+import {findByTypeAndEmployeeId,TransactionTypes,CardInsertData, insert} from "./../repositories/cardRepository.js"
 import { faker } from '@faker-js/faker'
 import dayjs from 'dayjs'
 import Cryptr from "cryptr"
@@ -9,8 +9,9 @@ import Cryptr from "cryptr"
 export async function createCard(type:TransactionTypes,idEmployee:number,key:string){    
   await checkEmployee(idEmployee);
   await checkEmployeeTypes(type,idEmployee);
-  const CardData = await setCardData(idEmployee,type);
-  //await InsertCard(CardData);
+  const CardData : CardInsertData = await setCardData(idEmployee,type);
+  console.log(CardData)
+  await InsertCard(CardData);
 }
 
 async function checkEmployee(idEmployee: number){
@@ -53,17 +54,17 @@ async function setCardData(idEmployee: number, type:TransactionTypes){
     isBlocked,
     type,
   }
-  return cardData as CardInsertData
+  return cardData
 }
 
 function setCardNumber(){
-  return faker.finance.creditCardNumber()
+  return faker.finance.creditCardNumber('VISA')
 }
 
 async function setCardHolderName(idEmployee:number){
   const employeeData = await findById(idEmployee)
   const employeeName = employeeData.fullName
-  const employeeNameArray = employeeName.split('')
+  const employeeNameArray = employeeName.split(' ')
   const length = employeeNameArray.length
   const firstName = employeeNameArray.at(0)
   const lastName = employeeNameArray.at(length-1)
@@ -71,7 +72,7 @@ async function setCardHolderName(idEmployee:number){
   const middleNamesfirstLetters = middleNames.map((name)=>{
     if(name.length>2){
       return name.at(0)
-    } 
+    }
   })
   const middleNamefirstLettersString = middleNamesfirstLetters.join(" ").toString()
   return `${firstName.toUpperCase()} ${middleNamefirstLettersString.toUpperCase()} ${lastName.toUpperCase()}`
@@ -86,11 +87,13 @@ function setSecurityCode(){
 }
 
 function setExpirationDate(){
-  const today = dayjs().locale('pt-br').format('MM/YY')
-  return dayjs(today).add(5,'years').add(1,'month').toString()
-
+  const expirationDate = dayjs().locale('pt-br').add(5,'years').format('MM/YY')
+  return expirationDate
 }
 
+async function InsertCard(CardData){
+  await insert(CardData)
+}
 
 
 
