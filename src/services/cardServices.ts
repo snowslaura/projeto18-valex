@@ -2,11 +2,13 @@ import {findById} from "./../repositories/employeeRepository.js"
 import {findByTypeAndEmployeeId,TransactionTypes,CardInsertData, insert} from "./../repositories/cardRepository.js"
 import { faker } from '@faker-js/faker'
 import dayjs from 'dayjs'
+import customParseFormat from "dayjs/plugin/customParseFormat.js"
+dayjs.extend(customParseFormat)
 import Cryptr from "cryptr"
 
 
 
-export async function createCard(type:TransactionTypes,idEmployee:number,key:string){    
+export async function createCard(type:TransactionTypes,idEmployee:number){    
   await checkEmployee(idEmployee);
   await checkEmployeeTypes(type,idEmployee);
   const CardData : CardInsertData = await setCardData(idEmployee,type);
@@ -74,7 +76,7 @@ async function setCardHolderName(idEmployee:number){
       return name.at(0)
     }
   })
-  const middleNamefirstLettersString = middleNamesfirstLetters.join(" ").toString()
+  const middleNamefirstLettersString = middleNamesfirstLetters.join(" ").toString().trim()
   return `${firstName.toUpperCase()} ${middleNamefirstLettersString.toUpperCase()} ${lastName.toUpperCase()}`
   
 }
@@ -91,7 +93,7 @@ function setExpirationDate(){
   return expirationDate
 }
 
-async function InsertCard(CardData){
+async function InsertCard(CardData : CardInsertData){
   await insert(CardData)
 }
 
