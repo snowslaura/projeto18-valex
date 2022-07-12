@@ -7,12 +7,10 @@ dayjs.extend(customParseFormat)
 import Cryptr from "cryptr"
 
 
-
 export async function createCard(type:TransactionTypes,idEmployee:number){    
   await checkEmployee(idEmployee);
   await checkEmployeeTypes(type,idEmployee);
   const CardData : CardInsertData = await setCardData(idEmployee,type);
-  console.log(CardData)
   await InsertCard(CardData);
 }
 

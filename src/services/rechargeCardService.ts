@@ -32,7 +32,7 @@ function isCardBlocked(cardData:any){
 
 function isCardActive(cardData:any){
     const {password} = cardData
-    if(password) throw{
+    if(!password) throw{
         type:"forbidden",
         message:"Card is not active"  
     }
