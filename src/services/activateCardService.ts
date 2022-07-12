@@ -47,6 +47,6 @@ function checkCVC(securityCode:string,CVC:string){
 }
 
 async function insertPassword(id:number,givenPassword:string){
-    const hashPassword = await( bcrypt.hash(givenPassword,parseInt(process.env.SALT)))
+    const hashPassword = await(bcrypt.hash(givenPassword,parseInt(process.env.SALT)))
     await update(id,{password:hashPassword,isBlocked:false})
 }

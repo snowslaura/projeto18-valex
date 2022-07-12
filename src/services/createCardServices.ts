@@ -1,5 +1,5 @@
-import {findById} from "./../repositories/employeeRepository.js"
-import {findByTypeAndEmployeeId,TransactionTypes,CardInsertData, insert} from "./../repositories/cardRepository.js"
+import {findById} from "../repositories/employeeRepository.js"
+import {findByTypeAndEmployeeId,TransactionTypes,CardInsertData, insert} from "../repositories/cardRepository.js"
 import { faker } from '@faker-js/faker'
 import dayjs from 'dayjs'
 import customParseFormat from "dayjs/plugin/customParseFormat.js"
@@ -84,8 +84,7 @@ async function setCardHolderName(idEmployee:number){
 function setSecurityCode(){
   const CVV =  faker.random.numeric(3)
   const cryptr = new Cryptr('myTotallySecretKey');
-  return cryptr.encrypt(CVV);
-  // const decryptedString = cryptr.decrypt(encryptedString);
+  return cryptr.encrypt(CVV);  
 }
 
 function setExpirationDate(){
