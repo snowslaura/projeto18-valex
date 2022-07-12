@@ -2,6 +2,8 @@ import {Request, Response} from "express"
 import * as cardServices from "../services/createCardServices.js"
 import * as activateCardService from "../services/activateCardService.js"
 import * as getBalanceCardService from "../services/getBalanceCardService.js"
+import * as blockCardService from "../services/blockCardService.js"
+import * as unblockCardService from "../services/unblockCardService.js"
 
 
 
@@ -20,6 +22,19 @@ export async function activateCard(req:Request,res: Response){
 export async function getBalance(req:Request,res: Response){
     const id = parseInt(req.params.id)
     const balance = await getBalanceCardService.getBalance(id)
-    console.log(balance)
     res.status(200).send(balance)
+}
+
+export async function blockCard(req:Request,res: Response){
+    const id = parseInt(req.params.id)
+    const {password} = req.body
+    await blockCardService.blockCard(id,password)
+    res.sendStatus(200)
+}
+
+export async function unblockCard(req:Request,res: Response){
+    const id = parseInt(req.params.id)
+    const {password} = req.body
+    await unblockCardService.unblockCard(id,password)
+    res.sendStatus(200)
 }
