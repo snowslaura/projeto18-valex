@@ -4,6 +4,8 @@ import * as activateCardService from "../services/activateCardService.js"
 import * as getBalanceCardService from "../services/getBalanceCardService.js"
 import * as blockCardService from "../services/blockCardService.js"
 import * as unblockCardService from "../services/unblockCardService.js"
+import * as rechargeCardService from "../services/rechargeCardService.js"
+import * as paymentCardService from "../services/paymentCardService.js"
 
 
 
@@ -36,5 +38,19 @@ export async function unblockCard(req:Request,res: Response){
     const id = parseInt(req.params.id)
     const {password} = req.body
     await unblockCardService.unblockCard(id,password)
+    res.sendStatus(200)
+}
+
+export async function rechargeCard(req:Request,res: Response){
+    const id = parseInt(req.params.id)
+    const {amount} = req.body
+    await rechargeCardService.rechargeCard(id,amount)
+    res.sendStatus(200)
+}
+
+export async function paymentCard(req:Request,res: Response){
+    const id = parseInt(req.params.id)
+    const {amount,businessId, password} = req.body
+    await paymentCardService.paymentCard(id,password,businessId,amount)
     res.sendStatus(200)
 }
