@@ -1,11 +1,14 @@
 import {findById} from "./../repositories/cardRepository.js"
+import {findByApiKey} from "./../repositories/companyRepository.js"
+import {findById as findEmployeeById}  from "./../repositories/employeeRepository.js"
 import {insert} from "./../repositories/rechargeRepository.js"
 import dayjs from "dayjs"
 import customParseFormat from "dayjs/plugin/customParseFormat.js"
 dayjs.extend(customParseFormat)
 
-export async function rechargeCard(id:number,amount:number){
+export async function rechargeCard(id:number,amount:number,APIKey:string){
     const cardData = await isCardRegistered(id)
+    await isCompanyAllowed(APIKey,cardData)
     isCardBlocked(cardData)
     isCardActive(cardData)
     isCardExpired(cardData)
@@ -19,6 +22,15 @@ async function isCardRegistered(id:number){
         message:"Card doens't exists"  
     }
     return cardData
+}
+
+async function isCompanyAllowed(APIKey:string,cardData:any){
+    const company = await findByApiKey(APIKey)
+    const employee = await findEmployeeById(cardData.employeeId)
+    if(company.id!==employee.companyId)throw{
+        type:"unauthorized",
+        message:"Company not allowed"  
+    }
 }
 
 

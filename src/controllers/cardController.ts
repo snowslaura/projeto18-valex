@@ -44,7 +44,8 @@ export async function unblockCard(req:Request,res: Response){
 export async function rechargeCard(req:Request,res: Response){
     const id = parseInt(req.params.id)
     const {amount} = req.body
-    await rechargeCardService.rechargeCard(id,amount)
+    const{APIKey} = res.locals
+    await rechargeCardService.rechargeCard(id,amount,APIKey)
     res.sendStatus(200)
 }
 
