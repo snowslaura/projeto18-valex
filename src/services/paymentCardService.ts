@@ -4,6 +4,7 @@ import bcrypt from "bcrypt"
 import {insert} from "./../repositories/paymentRepository.js"
 import dayjs from "dayjs"
 import customParseFormat from "dayjs/plugin/customParseFormat.js"
+import {getBalance} from "./../services/getBalanceCardService.js"
 dayjs.extend(customParseFormat)
 
 export async function paymentCard(id:number,password:string,businessId:number,amount:number){
@@ -14,6 +15,8 @@ export async function paymentCard(id:number,password:string,businessId:number,am
     isCardBlocked(cardData)
     isCardActive(cardData)
     isCardExpired(cardData)
+    const {balance} = await getBalance(id)
+    isThereEnoughBalance(balance,amount)
     updatePaymentCard(id,businessId,amount)
 }
 
@@ -25,9 +28,9 @@ async function isCardRegistered(id:number){
     }
     return cardData
 }
+
 async function isBusinessRegistered(id:number){
     const businessData = await findBusinessById(id)
-    console.log(businessData)
     if(!businessData)throw{
         type:"unprocessable_entity",
         message:"Business does not exists"  
@@ -73,6 +76,13 @@ function isCardExpired(cardData:any){
     if(!isExpirationDayAhead) throw {
         type:"forbidden",
         message:"Card expired"  
+    }
+}
+
+function isThereEnoughBalance(balance:number, amount:number){
+    if(balance<amount)throw{
+        type:"forbidden",
+        message:"Not enough balance"  
     }
 }
 
